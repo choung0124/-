@@ -1,8 +1,8 @@
 # Requirements
 
-! pip install gensim
-! pip install konlpy
-! pip install googleapiclient
+``` ! pip install gensim ```
+``` ! pip install konlpy ```
+``` ! pip install googleapiclient ```
 
 # Models
 
