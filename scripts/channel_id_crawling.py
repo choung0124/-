@@ -22,7 +22,7 @@ def get_channel_id(api_key, query):
         return None
 
 if __name__ == "__main__":
-    api_key = "AIzaSyAhe0mLJS2PYbJQAJ2jI1edRIiuOubZUNw"
+    api_key = "your_api_key"
     query = ch_username
     channel_id = get_channel_id(api_key, query)
 
