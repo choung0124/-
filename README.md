@@ -10,7 +10,8 @@ Models can be downloaded from here http://nlp.kookmin.ac.kr/kcc/word2vec/
 
 Both FastText and Word2Vec models will work with these scripts.
 
-There is an empty directory called models. When downloading the model zip files extract them anywhere you'd like, BUT make sure you copy the .model file into the /models directory.
+There is an empty directory called models. When downloading the model zip files extract them anywhere you'd like, 
+BUT make sure you copy the .model file into the /models directory.
 
 # Scripts
 
@@ -26,13 +27,16 @@ There is an empty directory called models. When downloading the model zip files 
 
     Replace "Youtube channel username" with the username of your channel, this must be exact
 
-    The channel IDs will be saved to "channel_ids.csv" in your current directory. This will be used as the input for crawling, so review this file before the proceding to the next step
+    The channel IDs will be saved to "channel_ids.csv" in your current directory. 
+    This will be used as the input for crawling, so review this file before the proceding to the next step
 
 2. Crawl the all of the comments of each youtube channel
 
 ``` ! python scripts/yt_channel_crawling.py "channel_ids.csv" ``` 
 
-    This script will crawl all of the comments and combine them into a file in your current directory called "extracted_text_korean_only.txt". This is your corpus. This file is encoded in euc-kr so when opening this file make sure to use an editor like VS Code that can decode euc-kr otherwise the text will look like this: "�Ҿ���� �� �����԰� �ִ� ���� ��Ż������ �� �ϰ� �ִ� �ſ����� �� �"
+    This script will crawl all of the comments and combine them into a file in your current directory called "extracted_text_korean_only.txt". 
+    This is your corpus. 
+    This file is encoded in euc-kr so when opening this file make sure to use an editor like VS Code that can decode euc-kr otherwise the text will look like this: "�Ҿ���� �� �����԰� �ִ� ���� ��Ż������ �� �ϰ� �ִ� �ſ����� �� �"
 
     At the bottom right of vs code you will see a button called "UTF-8" click on that and select the option to reopen the file and use euc-kr.
 
@@ -52,7 +56,8 @@ There is an empty directory called models. When downloading the model zip files 
 
 ``` ! python scripts/combine_yt_comments.py "outputs directory" ```
 
-    Replace "outputs directory" with the directory you made for the outputs from step 1. It is crucial that only the output.txt files are in this directory, otherwise you will get unwanted text in your final corpus.
+    Replace "outputs directory" with the directory you made for the outputs from step 1. 
+    It is crucial that only the output.txt files are in this directory, otherwise you will get unwanted text in your final corpus.
     This outputs a file called "combined_corpus.txt", encoded in euc-kr, to your current directory
 
 ### Morpheme Generation(형태소 분석석)
@@ -79,7 +84,7 @@ There is an empty directory called models. When downloading the model zip files 
     Once you run the script, this will create two output files. One will be named expanded_dict_modelname e.g. expanded_dict_FastText-KCC150.model.txt, this is your expanded dictionary
     The second file will be called output_modelname.txt e.g. output_FastText-KCC150.model.txt, this will show you the top5 similar words to your seed words and their similarity score.
 
-    Change the name of the expanded dictionary txt file before proceeding with the next step.
+    Change the name of bothe the output files before proceeding with the next step.
 
 2. Expanding your dictionary, 2nd time
 
