@@ -37,7 +37,6 @@ BUT make sure you copy the .model file into the /models directory.
     This script will crawl all of the comments and combine them into a file in your current directory called "extracted_text_korean_only.txt". 
     This is your corpus. 
     This file is encoded in euc-kr so when opening this file make sure to use an editor like VS Code that can decode euc-kr otherwise the text will look like this: "�Ҿ���� �� �����԰� �ִ� ���� ��Ż������ �� �ϰ� �ִ� �ſ����� �� �"
-
     At the bottom right of vs code you will see a button called "UTF-8" click on that and select the option to reopen the file and use euc-kr.
 
 ### Extracting comments from AI_HUBs JSON files
