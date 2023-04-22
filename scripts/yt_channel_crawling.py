@@ -10,7 +10,7 @@ from googleapiclient.errors import HttpError
 csv_file = sys.argv[1]
 
 # Set up your YouTube API key
-api_key = 'AIzaSyAhe0mLJS2PYbJQAJ2jI1edRIiuOubZUNw'
+api_key = 'your_api_key'
 youtube = build('youtube', 'v3', developerKey=api_key)
 
 # Initialize an empty list to store comments
