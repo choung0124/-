@@ -1,5 +1,6 @@
 import numpy as np
 from gensim.models import KeyedVectors, Word2Vec, FastText
+from sklearn.metrics.pairwise import cosine_similarity
 import argparse
 import os
 
@@ -49,8 +50,8 @@ with open(output_filename, 'w') as outfile:
             continue
         similarities = {}
         for morpheme in morpheme_embeddings:
-            similarity = np.dot(seed_embedding, morpheme_embeddings[morpheme])
-            similarities[morpheme] = similarity
+            similarity = cosine_similarity([seed_embedding], [morpheme_embeddings[morpheme]])
+            similarities[morpheme] = similarity[0][0]
         sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
         for i in range(args.topn):
             word, similarity = sorted_similarities[i]
@@ -66,13 +67,14 @@ for seed in seeds:
         continue
     similarities = {}
     for morpheme in morpheme_embeddings:
-        similarity = np.dot(seed_embedding, morpheme_embeddings[morpheme])
-        similarities[morpheme] = similarity
+        similarity = cosine_similarity([seed_embedding], [morpheme_embeddings[morpheme]])
+        similarities[morpheme] = similarity[0][0]
     sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
     expanded_dict.append(seed)
     for i in range(args.topn):
         word, similarity = sorted_similarities[i]
         expanded_dict.append(word)
+
 
 # Write expanded dictionary to output file
 expanded_dict_filename = f'expanded_dict_{os.path.basename(args.model_file)}.txt'
