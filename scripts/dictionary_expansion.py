@@ -2,6 +2,7 @@ import numpy as np
 from gensim.models import KeyedVectors, Word2Vec, FastText
 from sklearn.metrics.pairwise import cosine_similarity
 import argparse
+import codecs
 import os
 
 # Set up argument parser
@@ -14,7 +15,7 @@ args = parser.parse_args()
 
 # Load morpheme dictionary
 morpheme_dict = {}
-with open(args.morpheme_file, encoding="euc-kr") as f:
+with codecs.open(args.morpheme_file, encoding="euc-kr") as f:
     for line in f:
         line = line.strip().split()
         morpheme_dict[line[0]] = np.array([float(x) for x in line[1:]])
