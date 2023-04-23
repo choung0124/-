@@ -2,7 +2,7 @@
 
 ``` ! pip install gensim ```
 ``` ! pip install konlpy ```
-``` ! pip install googleapiclient ```
+``` ! pip install google-api-python-client ```
 
 # Models
 
