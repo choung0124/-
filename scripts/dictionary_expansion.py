@@ -13,21 +13,6 @@ parser.add_argument("seed_file", help="Path to seed words txt file")
 parser.add_argument("topn", type=int, default=5, help="Number of most similar words to include in the expanded dictionary")
 args = parser.parse_args()
 
-# Load morpheme dictionary
-morpheme_dict = {}
-with codecs.open(args.morpheme_file, encoding="euc-kr") as f:
-    for line in f:
-        line = line.strip().split()
-        morpheme_dict[line[0]] = np.array([float(x) for x in line[1:]])
-
-# Calculate word embeddings for all words in the morpheme dictionary
-morpheme_embeddings = {}
-for morpheme in morpheme_dict:
-    morpheme_embeddings[morpheme] = np.zeros(len(morpheme_dict[morpheme]))
-    for subword in morpheme_dict[morpheme]:
-        morpheme_embeddings[morpheme] += subword
-    morpheme_embeddings[morpheme] /= len(morpheme_dict[morpheme])
-
 # Load pre-trained word embedding model
 try:
     model = Word2Vec.load(args.model_file)
@@ -35,6 +20,22 @@ try:
 except:
     model = FastText.load(args.model_file)
     model_vocab = model.wv.key_to_index
+
+# Load morpheme dictionary and calculate word embeddings for all morphemes
+morpheme_dict = {}
+morpheme_embeddings = {}
+with codecs.open(args.morpheme_file, encoding="euc-kr") as f:
+    for line in f:
+        line = line.strip().split()
+        morpheme = line[0]
+        subwords = line[1:]
+        morpheme_dict[morpheme] = subwords
+        embeddings = []
+        for subword in subwords:
+            if subword in model_vocab:
+                embeddings.append(model.wv[subword])
+        if len(embeddings) > 0:
+            morpheme_embeddings[morpheme] = np.mean(embeddings, axis=0)
 
 # Load seed words
 with open(args.seed_file) as f:
