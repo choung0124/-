@@ -18,6 +18,14 @@ with open(args.morpheme_file, encoding="euc-kr") as f:
         line = line.strip().split()
         morpheme_dict[line[0]] = np.array([float(x) for x in line[1:]])
 
+# Calculate word embeddings for all words in the morpheme dictionary
+morpheme_embeddings = {}
+for morpheme in morpheme_dict:
+    morpheme_embeddings[morpheme] = np.zeros(len(morpheme_dict[morpheme]))
+    for subword in morpheme_dict[morpheme]:
+        morpheme_embeddings[morpheme] += subword
+    morpheme_embeddings[morpheme] /= len(morpheme_dict[morpheme])
+
 # Load pre-trained word embedding model
 try:
     model = Word2Vec.load(args.model_file)
@@ -30,28 +38,43 @@ except:
 with open(args.seed_file) as f:
     seeds = [line.strip() for line in f]
 
-# Get top 5 similar words for each seed word and write to output file
+# Get top N similar words for each seed word and write to output file
 output_filename = f'output_{os.path.basename(args.model_file)}.txt'
 with open(output_filename, 'w') as outfile:
     for seed in seeds:
+        outfile.write(f"Top {args.topn} similar words for '{seed}':\n")
         if seed in model_vocab:
-            outfile.write(f"Top 5 similar words for '{seed}':\n")
-            similar_words = model.wv.most_similar(seed, topn=5)
-            for word, similarity in similar_words:
-                outfile.write(f"{word}: {similarity}\n")
-            outfile.write("\n")
+            seed_embedding = model.wv[seed]
+        else:
+            continue
+        similarities = {}
+        for morpheme in morpheme_embeddings:
+            similarity = np.dot(seed_embedding, morpheme_embeddings[morpheme])
+            similarities[morpheme] = similarity
+        sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
+        for i in range(args.topn):
+            word, similarity = sorted_similarities[i]
+            outfile.write(f"{word}: {similarity}\n")
+        outfile.write("\n")
 
-# Create expanded dictionary with the 5 most similar words for each seed word
+# Create expanded dictionary with the N most similar words for each seed word
 expanded_dict = []
 for seed in seeds:
     if seed in model_vocab:
-        similar_words = model.wv.most_similar(seed, topn=args.topn)
-        expanded_dict.append(seed)
-        expanded_dict.extend([word for word, similarity in similar_words])
+        seed_embedding = model.wv[seed]
+    else:
+        continue
+    similarities = {}
+    for morpheme in morpheme_embeddings:
+        similarity = np.dot(seed_embedding, morpheme_embeddings[morpheme])
+        similarities[morpheme] = similarity
+    sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
+    expanded_dict.append(seed)
+    for i in range(args.topn):
+        word, similarity = sorted_similarities[i]
+        expanded_dict.append(word)
 
 # Write expanded dictionary to output file
 expanded_dict_filename = f'expanded_dict_{os.path.basename(args.model_file)}.txt'
 with open(expanded_dict_filename, 'w') as outfile:
     outfile.write(', '.join(expanded_dict))
-
-print(len(expanded_dict))
