@@ -4,10 +4,12 @@
 ``` ! pip install konlpy ```
 ``` ! pip install google-api-python-client ```
 ``` ! pip install sklearn ```
+''' ! pip install transformers ```
+
 
 # Models
 
-Models can be downloaded from here http://nlp.kookmin.ac.kr/kcc/word2vec/
+FastText and Word2Vec models can be downloaded from here http://nlp.kookmin.ac.kr/kcc/word2vec/
 
 Both FastText and Word2Vec models will work with these scripts.
 
