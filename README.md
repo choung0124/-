@@ -3,6 +3,7 @@
 ``` ! pip install gensim ```
 ``` ! pip install konlpy ```
 ``` ! pip install google-api-python-client ```
+``` ! pip install sklearn ```
 
 # Models
 
