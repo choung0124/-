@@ -1,5 +1,6 @@
 import os
 import sys
+import codecs
 
 # Check if the input directory is provided as an argument
 if len(sys.argv) != 2:
@@ -14,7 +15,7 @@ txt_files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(inp
 # Combine the contents of all .txt files into a single list
 combined_list = []
 for txt_file in txt_files:
-    with open(os.path.join(input_dir, txt_file), "r") as f:
+    with codecs.open(os.path.join(input_dir, txt_file), "r", encoding='euc-kr') as f:
         contents = f.read().split(",")
         combined_list.extend(contents)
 
@@ -22,7 +23,7 @@ print("Number of items in combined list:", len(combined_list))
 
 # Write the combined list to a file
 output_file = "extracted_text_korean_only.txt"
-with open(output_file, "w") as f:
+with codecs.open(output_file, "w", encoding='euc-kr') as f:
     f.write(",".join(combined_list))
 
 # Merge all sublists into a single list
@@ -34,5 +35,5 @@ print("Number of items in merged list:", len(merged_list))
 
 # Write the merged list to a file
 output_file = "merged_corpus.txt"
-with open(output_file, "w") as f:
+with codecs.open(output_file, "w", encoding='euc-kr') as f:
     f.write("\n".join(merged_list))
