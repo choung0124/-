@@ -4,27 +4,28 @@
 ``` ! pip install konlpy ```
 ``` ! pip install google-api-python-client ```
 ``` ! pip install sklearn ```
-''' ! pip install transformers ```
+``` ! pip install transformers ```
 
 
 # Models
 
 FastText and Word2Vec models can be downloaded from here http://nlp.kookmin.ac.kr/kcc/word2vec/
 
-Both FastText and Word2Vec models will work with these scripts.
+Korean Sentence BERT model can be downloaded from here https://huggingface.co/BM-K/KoSimCSE-roberta
+    ``` ! git clone https://huggingface.co/BM-K/KoSimCSE-roberta ```
 
 There is an empty directory called models. When downloading the model zip files extract them anywhere you'd like, 
 BUT make sure you copy the .model file into the /models directory.
 
 # Scripts
 
-## Run all scripts from the root directory
+### Run all scripts from the ./word_embedding/ directory
 
-### Preparing the corpus
+## 1. Preparing the corpus
 
-#### Crawling youtube comments
+### Crawling youtube comments
 
-1. Find the channel IDs of the youtube channels you want to crawl comments from
+a. Find the channel IDs of the youtube channels you want to crawl comments from
 
 ``` ! python scripts/channel_id_crawling.py "Youtube channel username" ```
 
@@ -33,7 +34,7 @@ BUT make sure you copy the .model file into the /models directory.
     The channel IDs will be saved to "channel_ids.csv" in your current directory. 
     This will be used as the input for crawling, so review this file before the proceding to the next step
 
-2. Crawl the all of the comments of each youtube channel
+b. Crawl the all of the comments of each youtube channel
 
 ``` ! python scripts/yt_channel_crawling.py "channel_ids.csv" ``` 
 
@@ -44,7 +45,7 @@ BUT make sure you copy the .model file into the /models directory.
 
 ### Extracting comments from AI_HUBs JSON files
 
-1. Extract comments from JSON files
+a. Extract comments from JSON files
 
 ``` ! python scripts/crawl_json.py "/Json Directory" ```
 
@@ -54,7 +55,7 @@ BUT make sure you copy the .model file into the /models directory.
     Make sure that you organize these txt files into their own directory, this will help with the next step. 
     Again, these files are encoded in euc-kr, refer to the previous steps on how to read euc-kr files
 
-2. Combine the output.txt files into your final corpus
+b. Combine the output.txt files into your final corpus
 
 ``` ! python scripts/combine_yt_comments.py "outputs directory" ```
 
@@ -62,7 +63,7 @@ BUT make sure you copy the .model file into the /models directory.
     It is crucial that only the output.txt files are in this directory, otherwise you will get unwanted text in your final corpus.
     This outputs a file called "combined_corpus.txt", encoded in euc-kr, to your current directory
 
-### Morpheme Generation(형태소 분석석)
+## 2. Morpheme Generation(형태소 분석석)
 
 1. Convert your corpus into a morpheme"형태소" dictionary
 
@@ -72,11 +73,11 @@ BUT make sure you copy the .model file into the /models directory.
     This outputs a file whose name begins with your input filename, and ends in morphs.txt
     For example: "combined_corpus_morphs.txt". This is your morph dictionary
 
-###  Dictionary Expansion()
+## 3. Dictionary Expansion
 
-1. Expanding your dictionary, 1st time
+a. Expanding your dictionary, 1st time
 
-``` ! python scripts/dictionary_expansion.py "morph dictionary" "models/yourmodel" "seed_words.txt" number```
+``` ! python scripts/dict_expansion_cosine_sim.py "morph dictionary" "models/yourmodel" "seed_words.txt" "number"```
 
     Replace "morph dictionary" with the path to the morph dictionary you created in the previous step
     Replace "model" with the path to the model you'd like to use to measure similarity
@@ -86,13 +87,14 @@ BUT make sure you copy the .model file into the /models directory.
     Once you run the script, this will create two output files. One will be named expanded_dict_modelname e.g. expanded_dict_FastText-KCC150.model.txt, this is your expanded dictionary
     The second file will be called output_modelname.txt e.g. output_FastText-KCC150.model.txt, this will show you the top5 similar words to your seed words and their similarity score.
 
-    Change the name of bothe the output files before proceeding with the next step.
+    Change the name of both the output files before proceeding with the next step.
 
-2. Expanding your dictionary, 2nd time
+b. Expanding your dictionary, 2nd time
 
-``` ! python scripts/dictionary_expansion.py "morph dictionary" "models/yourmodel" "seed_words.txt" number```
+``` ! python scripts/dict_expansion_cosine_sim.py "morph dictionary" "models/yourmodel" "seed_words.txt" "number" "expanded_dictionary.txt ``` 
 
-    This is exactly the same as step 1, but this time replace "seed_words.txt" with the expanded dictionary txt file you got from the previous step, you should have changed the name of this file by now, otherwise this script will delete its contents to write over it.
+    This is exactly the same as step 1, but this time add the path to your expanded dictionary you got in the previous setp
+    
 
 
 
