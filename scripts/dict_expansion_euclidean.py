@@ -58,14 +58,14 @@ for seed in tqdm(seeds, desc='Expanding dictionary'):
         seed_embedding = model.wv[seed]
     else:
         continue
-    similarities = {}
+    distances = {}
     for morpheme in morpheme_embeddings:
-        similarity = cosine_similarity([seed_embedding], [morpheme_embeddings[morpheme]])
-        similarities[morpheme] = similarity[0][0]
-    sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
+        distance = np.linalg.norm(seed_embedding - morpheme_embeddings[morpheme])
+        distances[morpheme] = distance
+    sorted_distances = sorted(distances.items(), key=lambda x: x[1])
     expanded_dict.append(seed)
-    for i in range(min(args.topn, len(sorted_similarities))):
-        word, similarity = sorted_similarities[i]
+    for i in range(min(args.topn, len(sorted_distances))):
+        word, distance = sorted_distances[i]
         expanded_dict.append(word)
 
 # Write expanded dictionary to output file
@@ -80,17 +80,17 @@ with open(output_filename, 'w') as outfile:
         outfile.write(f"Top 5 similar words for '{seed}':\n")
         if seed not in expanded_dict:
             continue
-        similarities = {}
+        distances = {}
         seed_embedding = model.wv[seed]
         for word in expanded_dict:
             if word == seed:
                 continue
             if word in model_vocab:
                 word_embedding = model.wv[word]
-                similarity = cosine_similarity([seed_embedding], [word_embedding])
-                similarities[word] = similarity[0][0]
-        sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
-        for i in range(min(5, len(sorted_similarities))):
-            word, similarity = sorted_similarities[i]
-            outfile.write(f"{word}: {similarity}\n")
+                distance = np.linalg.norm(seed_embedding - word_embedding)
+                distances[word] = distance
+        sorted_distances = sorted(distances.items(), key=lambda x: x[1])
+        for i in range(min(5, len(sorted_distances))):
+            word, distance = sorted_distances[i]
+            outfile.write(f"{word}: {distance}\n")
         outfile.write("\n")

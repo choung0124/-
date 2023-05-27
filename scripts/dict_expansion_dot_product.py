@@ -1,6 +1,5 @@
 import numpy as np
 from gensim.models import KeyedVectors, Word2Vec, FastText
-from sklearn.metrics.pairwise import cosine_similarity
 import argparse
 import codecs
 import os
@@ -60,13 +59,15 @@ for seed in tqdm(seeds, desc='Expanding dictionary'):
         continue
     similarities = {}
     for morpheme in morpheme_embeddings:
-        similarity = cosine_similarity([seed_embedding], [morpheme_embeddings[morpheme]])
-        similarities[morpheme] = similarity[0][0]
+        similarity = np.dot(seed_embedding, morpheme_embeddings[morpheme])
+        similarities[morpheme] = similarity
     sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
     expanded_dict.append(seed)
     for i in range(min(args.topn, len(sorted_similarities))):
         word, similarity = sorted_similarities[i]
         expanded_dict.append(word)
+
+# rest of your code...
 
 # Write expanded dictionary to output file
 expanded_dict_filename = f'expanded_dict_{os.path.basename(args.model_file)}.txt'
@@ -87,10 +88,11 @@ with open(output_filename, 'w') as outfile:
                 continue
             if word in model_vocab:
                 word_embedding = model.wv[word]
-                similarity = cosine_similarity([seed_embedding], [word_embedding])
-                similarities[word] = similarity[0][0]
+                similarity = np.dot(seed_embedding, word_embedding)
+                similarities[word] = similarity
         sorted_similarities = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
         for i in range(min(5, len(sorted_similarities))):
             word, similarity = sorted_similarities[i]
             outfile.write(f"{word}: {similarity}\n")
         outfile.write("\n")
+
